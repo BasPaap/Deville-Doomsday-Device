@@ -15,6 +15,7 @@ namespace Bas::Elerion
 		};
 
 	private:
+		int diskIndex;
 		unsigned long minDuration;
 		unsigned long maxDuration;
 		int minRelativeSpeed;

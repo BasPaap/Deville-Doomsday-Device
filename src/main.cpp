@@ -1,12 +1,12 @@
 #include <Arduino.h>
 #include "DoomsdayDisk.h"
 #include <Bas.Button.h>
-const int innerDiskPin1 = 9;
-const int innerDiskPin2 = 10;
-const int middleDiskPin1 = 13;
-const int middleDiskPin2 = 14;
-const int outerDiskPin1 = 1;
-const int outerDiskPin2 = 15;
+const int innerDiskPin1 = 3;
+const int innerDiskPin2 = 5;
+const int middleDiskPin1 = 6;
+const int middleDiskPin2 = 9;
+const int outerDiskPin1 = 10;
+const int outerDiskPin2 = 11;
 const int maxSpeedOverridePin = A0;
 const int testButtonPin = 2;
 
@@ -18,6 +18,11 @@ Bas::Elerion::DoomsdayDisk outerDisk{10000, 20000, 0, 255, outerDiskPin1, outerD
 void onTestButtonPressed()
 {
 	Serial.println("Test button pressed.");
+}
+
+void onTestButtonReleased()
+{
+	Serial.println("Test button released.");
 }
 
 Bas::Elerion::DoomsdayDisk::Mode getCurrentMode()
@@ -34,7 +39,7 @@ void setup()
 
 	Serial.println("Starting Deville Doomsday Device.");
 
-	testButton.begin(onTestButtonPressed);
+	testButton.begin(onTestButtonPressed, onTestButtonReleased);
 	testButton.update();
 
 	Bas::Elerion::DoomsdayDisk::Mode mode = getCurrentMode();

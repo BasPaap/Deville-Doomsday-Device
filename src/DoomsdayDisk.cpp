@@ -16,11 +16,22 @@ void Bas::Elerion::DoomsdayDisk::startSpinning()
 
 	delayedFunction.begin(currentDuration, [this]{ startSpinning(); });
 
-	Serial.print("Started spinning at relative speed ");
+	Serial.print("Disk ");
+	Serial.print(diskIndex);
+	Serial.print(" started spinning at relative speed ");
 	Serial.print(currentRelativeSpeed);
 	Serial.print(" for ");
 	Serial.print(currentDuration);
-	Serial.println(" milliseconds.");
+	Serial.print(" milliseconds in ");
+	if (isRotatingClockwise)
+	{
+		Serial.print("clockwise");
+	}
+	else
+	{
+		Serial.print("counter-clockwise");
+	}
+	Serial.println(" direction.");
 }
 
 void Bas::Elerion::DoomsdayDisk::startTestMode()
@@ -30,24 +41,44 @@ void Bas::Elerion::DoomsdayDisk::startTestMode()
 
 	isRotatingClockwise = willRunClockwiseInTestMode;
 
-	Serial.print("Started test mode at relative speed ");
+	Serial.print("Disk ");
+	Serial.print(diskIndex);
+	Serial.print(" started test mode at relative speed ");
 	Serial.print(currentRelativeSpeed);
-	Serial.println(".");
+	Serial.print(" in ");
+	if (isRotatingClockwise)
+	{
+		Serial.print("clockwise");
+	}
+	else
+	{
+		Serial.print("counter-clockwise");
+	}
+	Serial.println(" direction.");
 }
 
 Bas::Elerion::DoomsdayDisk::DoomsdayDisk(unsigned long minDuration, unsigned long maxDuration, int minRelativeSpeed, int maxRelativeSpeed, int motorPin1, int motorPin2, int maxSpeedOverridePin, bool willRunClockwiseInTestMode)
-	: minDuration{minDuration}, maxDuration{maxDuration}, minRelativeSpeed{minRelativeSpeed}, maxRelativeSpeed{maxRelativeSpeed}, motorPin1{motorPin1}, motorPin2{motorPin2}, maxSpeedOverridePin{maxSpeedOverridePin}, bool willRunClockwiseInTestMode{bool willRunClockwiseInTestMode}
+	: minDuration{minDuration}, maxDuration{maxDuration}, minRelativeSpeed{minRelativeSpeed}, maxRelativeSpeed{maxRelativeSpeed}, motorPin1{motorPin1}, motorPin2{motorPin2}, maxSpeedOverridePin{maxSpeedOverridePin}, willRunClockwiseInTestMode{willRunClockwiseInTestMode}
 {
+	static int numDisks{0};
+	diskIndex = numDisks;
+	numDisks++;
 }
 
 void Bas::Elerion::DoomsdayDisk::begin(Mode mode)
 {
+	Serial.print("Initializing disk ");
+	Serial.print(diskIndex);
+	Serial.print(" in ");
+
 	if (mode == Mode::normal)
 	{
+		Serial.println("normal mode.");
 		startSpinning();
 	}
 	else
 	{
+		Serial.println("test mode.");
 		startTestMode();
 	}
 }
@@ -56,15 +87,22 @@ void Bas::Elerion::DoomsdayDisk::update(Mode mode)
 {
 	if (mode != currentMode)
 	{
+		Serial.print("Disk ");
+		Serial.print(diskIndex);
+		Serial.print(" mode changed to ");
+
 		if (mode == Mode::test)
 		{
+			Serial.println("test mode.");
 			delayedFunction.cancel();	// Stop waiting for the next cycle.
 			startTestMode();
 		}
 		else
 		{
+			Serial.println("normal mode.");
 			startSpinning();
 		}
+
 
 		currentMode = mode;
 	}
