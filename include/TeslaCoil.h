@@ -10,8 +10,8 @@ namespace Bas::Elerion
 	private:
 		int relayPin;
 		Bas::DelayedFunction delayedFunction;
-		const int onDurationInMilliseconds = 60000;
-		const int offDurationInMilliseconds = 120000;
+		const unsigned long onDurationInMilliseconds = 60000;
+		const unsigned long offDurationInMilliseconds = 120000;
 
 	public:
 		TeslaCoil(int relayPin);
