@@ -32,7 +32,7 @@ namespace Bas::Elerion
 
 		void startSpinning();
 		void startTestMode();
-
+		void waitForNextSpin();
 	public:
 		DoomsdayDisk(unsigned long minDuration, unsigned long maxDuration, int minRelativeSpeed, int maxRelativeSpeed, int motorPin1, int motorPin2, int maxSpeedOverridePin, bool willRunClockwiseInTestMode);
 		void begin(Mode mode);

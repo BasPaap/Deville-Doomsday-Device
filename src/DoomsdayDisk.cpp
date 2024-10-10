@@ -1,11 +1,23 @@
 #include "DoomsdayDisk.h"
 #include <Arduino.h>
 
+void Bas::Elerion::DoomsdayDisk::waitForNextSpin()
+{
+	currentRelativeSpeed = 0;
+
+	Serial.print("Disk ");
+	Serial.print(diskIndex);
+	Serial.println(" pausing for next phase. ");
+
+	delayedFunction.begin(2000, [this]{ startSpinning(); });
+}
+
 void Bas::Elerion::DoomsdayDisk::startSpinning()
 {
 	int constrainedMaxSpeed = constrain(maxRelativeSpeed, 0, 255);
 	int constrainedMinSpeed = constrain(minRelativeSpeed, 0, maxRelativeSpeed);
-	currentRelativeSpeed = random(constrainedMinSpeed, constrainedMaxSpeed + 1);
+//	currentRelativeSpeed = random(constrainedMinSpeed, constrainedMaxSpeed + 1);
+	currentRelativeSpeed = constrainedMaxSpeed;
 
 	const unsigned long maxMilliseconds = 3600000;
 	unsigned long constrainedMaxDuration = constrain(maxDuration, 0, maxMilliseconds);
@@ -14,7 +26,10 @@ void Bas::Elerion::DoomsdayDisk::startSpinning()
 
 	isRotatingClockwise = random(0, 2);
 
-	delayedFunction.begin(currentDuration, [this]{ startSpinning(); });
+	delayedFunction.begin(currentDuration, [this]
+	{
+		 waitForNextSpin();
+	});
 
 	Serial.print("Disk ");
 	Serial.print(diskIndex);
